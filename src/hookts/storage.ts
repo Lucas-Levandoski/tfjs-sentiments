@@ -102,7 +102,7 @@ export function useStorage() {
           const qrCenterY = window.innerHeight / 2;
           const qrSize = 400;
           const buffer = 50; // Extra space around QR code
-          
+
           let x, y;
           do {
             x = Math.random() * (window.innerWidth - 300);
@@ -114,18 +114,18 @@ export function useStorage() {
             y + 100 > qrCenterY - qrSize/2 - buffer &&
             y < qrCenterY + qrSize/2 + buffer
           );
-          
+
           const newFloatingMessage: FloatingMessage = {
             ...message,        x,        y,        opacity: 0, // Start invisible for fade in effect
             scale: 0.5, // Start small
-            color: getRandomColor(),        vx: (Math.random() - 0.5) * 1, // Very slow random velocity
-            vy: (Math.random() - 0.5) * 1,        wiggleTime: 0,        nextWiggle: Date.now() + Math.random() * 5000 // First wiggle in 0-5 seconds
+            color: getRandomColor(),        vx: (Math.random()) * 1, // Very slow random velocity
+            vy: (Math.random()) * 1,        wiggleTime: 0,        nextWiggle: Date.now() + Math.random() * 5000 // First wiggle in 0-5 seconds
           };
           
           setFloatingMessages(prev => [...prev, newFloatingMessage]);
         }, index * 300); // Stagger new messages
       });
-      
+
       setLastMessageCount(messages.length);
     }
   }, [messages, lastMessageCount]);
