@@ -13,6 +13,12 @@ export function useClient() {
   const [toxicityModel, setToxicityModel] = useState<toxicity.ToxicityClassifier | null>(null);
   const [sentenceEncoder, setSentenceEncoder] = useState<use.UniversalSentenceEncoder | null>(null);
   const [modelLoading, setModelLoading] = useState(true);
+  const [latestSentimentAnalysis, setLatestSentimentAnalysis] = useState<{
+    message: string;
+    scores: { [key in Intentions]: number };
+    winner: Intentions;
+    emoji: string;
+  } | null>(null);
 
   // Load TensorFlow.js models
   useEffect(() => {
@@ -75,30 +81,54 @@ export function useClient() {
   const analyzeMessage = async (text: string): Promise<string> => {
     const toxic = await analyzeToxicity(text);
 
-    if(toxic) return `${toxic} - ${text.replaceAll(/./gm, '*')}`
+    if(toxic) {
+      // Clear sentiment analysis for toxic messages
+      setLatestSentimentAnalysis(null);
+      return `${toxic} - ${text.replaceAll(/./gm, '*')}`
+    }
 
-    const intent = await analyzeIntention(text);
+    const intentResult = await analyzeIntention(text);
+    
+    // Store the sentiment analysis results
+    setLatestSentimentAnalysis({
+      message: text,
+      scores: intentResult.scores,
+      winner: intentResult.winner,
+      emoji: intentResult.emoji
+    });
 
-    return `${intent} - ${text}`
+    return `${intentResult.emoji} - ${text}`
   }
 
-  const analyzeIntention = async(text: string): Promise<string> => {
-    if(!sentenceEncoder) return '';
+  const analyzeIntention = async(text: string): Promise<{ 
+    emoji: string, 
+    scores: { [key in Intentions]: number } | any, 
+    winner: Intentions
+  }> => {
+    if(!sentenceEncoder) return { emoji: '', scores: {}, winner: 'question' };
 
     let highest = -1;
     let sentiment = '';
+    let winnerKey = '';
     const textEmbedding = (await sentenceEncoder.embed(text)).arraySync()[0];
+    const allScores: { [Intentions: string]: number } = {};
 
     for(const [ key, sentimentEmbedding ] of (Object.entries(embeddableSentiment) as [Intentions, number[]][])){
       const similarity = cosineSimilarity(textEmbedding, sentimentEmbedding);
+      allScores[key] = similarity;
 
       if(similarity > highest) {
         highest = similarity;
-        sentiment = sentimentEmojis[key]
+        sentiment = sentimentEmojis[key];
+        winnerKey = key;
       }
     }
 
-    return sentiment;
+    return {
+      emoji: sentiment,
+      scores: allScores,
+      winner: winnerKey as Intentions,
+    };
   }
 
   const analyzeToxicity = async (text: string): Promise<string> => {
@@ -165,5 +195,6 @@ export function useClient() {
     sentenceEncoder,
     analyzeMessageToxicity: analyzeToxicity,
     messages,
+    latestSentimentAnalysis,
   }
 }

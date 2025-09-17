@@ -1,9 +1,10 @@
 'use client';
 
 import { useClient } from '@/hookts';
+import { Intentions, sentimentEmojis } from '@/models';
 
 export default function ClientPage() {
-  const { modelLoading, sendMessage, newMessage, setNewMessage, isLoading, messages } = useClient();
+  const { modelLoading, sendMessage, newMessage, setNewMessage, isLoading, messages, latestSentimentAnalysis } = useClient();
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
@@ -18,7 +19,7 @@ export default function ClientPage() {
               <p className="text-yellow-800">🧠 Loading TensorFlow.js models (Positive Sentiment Analysis)...</p>
             </div>
           )}
-          
+
           {/* Message Form */}
           <form onSubmit={sendMessage} className="mb-8">
             <div className="flex gap-2">
@@ -39,6 +40,58 @@ export default function ClientPage() {
               </button>
             </div>
           </form>
+
+          {/* Sentiment Analysis Results */}
+          {latestSentimentAnalysis && (
+            <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
+              <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                🎯 Sentiment Analysis for: "{latestSentimentAnalysis.message}"
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Winner */}
+                <div className="bg-white text-gray-700 p-3 rounded-lg border-l-4 border-green-500">
+                  <h4 className="font-semibold mb-1">🏆 Detected Sentiment</h4>
+                  <div className="text-2xl">
+                    {latestSentimentAnalysis.emoji} {latestSentimentAnalysis.winner}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {(latestSentimentAnalysis.scores[latestSentimentAnalysis.winner] * 100).toFixed(1)}% confidence
+                  </div>
+                </div>
+
+                {/* All Scores */}
+                <div className="bg-white text-gray-700 p-3 rounded-lg">
+                  <h4 className="font-semibold mb-2">📊 All Sentiment Scores</h4>
+                  <div className="space-y-1">
+                    {Object.entries(latestSentimentAnalysis.scores)
+                      .sort(([,a], [,b]) => b - a)
+                      .map(([sentiment, score]) => (
+                        <div key={sentiment} className="flex justify-between items-center text-sm">
+                          <span className="flex items-center gap-1">
+                            <span className="text-lg">
+                              {sentimentEmojis[sentiment as Intentions]}
+                            </span>
+                            {sentiment}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <div className="w-16 bg-gray-200 rounded-full h-2">
+                              <div 
+                                className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                                style={{ width: `${score * 100}%` }}
+                              ></div>
+                            </div>
+                            <span className="w-12 text-right font-mono">
+                              {(score * 100).toFixed(1)}%
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           
           {/* Model Ready Status */}
           {!modelLoading &&  (
