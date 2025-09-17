@@ -51,6 +51,7 @@ export default function StoragePage() {
         ))}
       </div>
 
+
       <button className="rounded-full px-3 py-3 bg-gradient-to-tr from-green-900 via-blue-900 ml-4 mt-4 cursor-pointer" onClick={() => clearAllMessages()}>
         <MdCleaningServices className='text-black size-8'/>
       </button>

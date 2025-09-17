@@ -2,6 +2,12 @@
 
 import { useClient } from '@/hookts';
 import { Intentions, sentimentEmojis } from '@/models';
+import Image from 'next/image';
+import Link from 'next/link';
+import Lucas from '@/../public/lucas.jpg';
+import Iasmim from '@/../public/iasmim.jpg';
+import { PiLinktreeLogo } from 'react-icons/pi';
+import { BsLinkedin } from 'react-icons/bs';
 
 export default function ClientPage() {
   const { modelLoading, sendMessage, newMessage, setNewMessage, isLoading, messages, latestSentimentAnalysis } = useClient();
@@ -9,6 +15,16 @@ export default function ClientPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-2 sm:p-4 lg:p-6">
       <div className="max-w-6xl mx-auto">
+        <div className='flex justify-around mb-6'>
+          <Link href='https://linktr.ee/lucas_levandoski' className='flex flex-col items-center gap-4'>
+            <Image src={Lucas} alt="Lucas" width={100} height={100} className='rounded-full' />
+            <p className='text-blue-500 underline flex items-center gap-3' ><PiLinktreeLogo size={20} /> Linktree</p>
+          </Link>
+          <Link href='https://www.linkedin.com/in/oliveiasmim/' className='flex flex-col items-center gap-4'>
+            <Image src={Iasmim} alt="Iasmim" width={100} height={100} className='rounded-full' />
+            <p className='text-blue-500 underline flex items-center gap-3'><BsLinkedin size={20}/>LinkedIn</p>
+          </Link>
+        </div>
         <div className="bg-white rounded-lg shadow-md p-3 sm:p-4 lg:p-6">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-4 sm:mb-6 text-center sm:text-left">
             Message Client
