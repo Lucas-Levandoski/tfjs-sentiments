@@ -64,7 +64,7 @@ export default function ClientPage() {
           {latestSentimentAnalysis && (
             <div className="mb-6 sm:mb-8 p-3 sm:p-4 lg:p-6 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
               <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-800 mb-3 sm:mb-4">
-                Latest Message Sentiment Analysis
+                {latestSentimentAnalysis.message}
               </h3>
               
               <div className="mb-4 sm:mb-6">
@@ -117,32 +117,6 @@ export default function ClientPage() {
               ✅ AI toxicity detection enabled - messages will be analyzed and tagged with emojis
             </div>
           )}
-
-          {/* Messages List */}
-          <div className="space-y-3 sm:space-y-4">
-            <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-800">Messages</h2>
-            {messages.length === 0 ? (
-              <div className="text-center py-8 sm:py-12">
-                <p className="text-gray-500 italic text-sm sm:text-base">
-                  No messages yet. Send your first message above!
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-3 max-h-96 overflow-y-auto">
-                {messages
-                  .slice(0, 20)
-                  .map((message) => (
-                    <div
-                      key={message.id}
-                      className="p-4 rounded-lg bg-blue-100 border-l-4 border-blue-500"
-                    >
-                      <p className="text-gray-800">{message.content}</p>
-                    </div>
-                  ))
-                }
-              </div>
-            )}
-          </div>
         </div>
       </div>
     </div>
