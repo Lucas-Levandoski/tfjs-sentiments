@@ -45,7 +45,7 @@ export default function ClientPage() {
           {latestSentimentAnalysis && (
             <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
               <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                🎯 Sentiment Analysis for: "{latestSentimentAnalysis.message}"
+                🎯 Sentiment Analysis for: &quot;{latestSentimentAnalysis.message}&quot;
               </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
