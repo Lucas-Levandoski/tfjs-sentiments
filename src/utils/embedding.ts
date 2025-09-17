@@ -20,5 +20,3 @@ export function cosineSimilarity(a: number[], b: number[]): number {
   return dot / (aMag * bMag);
 }
 
-
-

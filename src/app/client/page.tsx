@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Lucas from '@/../public/lucas.jpg';
 import Iasmim from '@/../public/iasmim.jpg';
+import Workshop from '@/../public/workshop.png';
 import { PiLinktreeLogo } from 'react-icons/pi';
 import { BsLinkedin } from 'react-icons/bs';
 
@@ -25,29 +26,37 @@ export default function ClientPage() {
             <p className='text-blue-500 underline flex items-center gap-3'><BsLinkedin size={20}/>LinkedIn</p>
           </Link>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-3 sm:p-4 lg:p-6">
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-4 sm:mb-6 text-center sm:text-left">
-            Message Client
-          </h1>
-
+        <div className='flex w-full justify-center mb-4'>
+          <Link href="https://apps.thedevconf.com/register/tdc-2025-saopaulo/workshops" className='text-xl bold'>
+            <Image src={Workshop} alt="workshop" />
+          </Link>
+        </div>
+        <div className="bg-white rounded-lg shadow-lg p-3 sm:p-4 lg:p-6">
           {/* Model Loading Status */}
           {modelLoading && (
             <div className="mb-4 p-3 bg-yellow-100 border border-yellow-400 rounded-lg">
               <p className="text-yellow-800 text-sm sm:text-base">
-                🧠 Loading TensorFlow.js models (Positive Sentiment Analysis)...
+                🧠 Carregando TensorFlow.js modelos (Positive Sentiment Analysis & Toxicity)...
               </p>
+            </div>
+          )}
+
+          {/* Model Ready Status */}
+          {!modelLoading &&  (
+            <div className="mb-4 text-sm text-green-600">
+              ✅ Modelos de Universal Sentence Encode (use) e Toxicity ativos - sua mensagem será analisada e atribuída a um sentimento
             </div>
           )}
 
           {/* Message Form */}
           <form onSubmit={sendMessage} className="mb-6 sm:mb-8">
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+            <div className="flex flex-col relative sm:flex-row gap-2 sm:gap-3">
               <input
                 type="text"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                placeholder={modelLoading ? "Loading AI model..." : "Type your message here..."}
-                className="flex-1 px-3 sm:px-4 py-2 sm:py-3 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+                placeholder={modelLoading ? "Carregando modelos..." : "Digite sua mensage..."}
+                className="flex-1 px-3 sm:px-4 py-2 sm:py-3 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base disabled:border-amber-700 disabled:cursor-not-allowed"
                 disabled={isLoading || modelLoading}
               />
               <button
@@ -55,7 +64,7 @@ export default function ClientPage() {
                 disabled={isLoading || modelLoading || !newMessage.trim()}
                 className="px-4 sm:px-6 py-2 sm:py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm sm:text-base font-medium whitespace-nowrap"
               >
-                {isLoading ? 'Analyzing...' : modelLoading ? 'Loading...' : 'Send'}
+                {isLoading ? 'Analizando...' : modelLoading ? 'Carregando...' : 'Enviado'}
               </button>
             </div>
           </form>
@@ -72,17 +81,17 @@ export default function ClientPage() {
                   <div className="flex items-center gap-2">
                     <span className="text-xl sm:text-2xl">{latestSentimentAnalysis.emoji}</span>
                     <span className="font-medium text-gray-700 text-sm sm:text-base">
-                      Winner: {latestSentimentAnalysis.winner}
+                      Ganhaodr: {latestSentimentAnalysis.winner}
                     </span>
                   </div>
                   <span className="text-xs sm:text-sm text-gray-600 bg-white px-2 py-1 rounded-full">
-                    Confidence: {(latestSentimentAnalysis.scores[latestSentimentAnalysis.winner] * 100).toFixed(1)}%
+                    Confiança: {(latestSentimentAnalysis.scores[latestSentimentAnalysis.winner] * 100).toFixed(1)}%
                   </span>
                 </div>
               </div>
 
               <div className="space-y-2 sm:space-y-3">
-                <h4 className="text-xs sm:text-sm font-medium text-gray-700 mb-2">All Sentiment Scores:</h4>
+                <h4 className="text-xs sm:text-sm font-medium text-gray-700 mb-2">Todos os Sentimentos:</h4>
                 <div className="grid gap-2 sm:gap-3">
                   {Object.entries(latestSentimentAnalysis.scores)
                     .sort(([,a], [,b]) => b - a)
@@ -108,13 +117,6 @@ export default function ClientPage() {
                     ))}
                 </div>
               </div>
-            </div>
-          )}
-          
-          {/* Model Ready Status */}
-          {!modelLoading &&  (
-            <div className="mb-4 text-sm text-green-600">
-              ✅ AI toxicity detection enabled - messages will be analyzed and tagged with emojis
             </div>
           )}
         </div>
